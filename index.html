@@ -1491,7 +1491,8 @@
         }
 
         refreshUI();
-    </script>
+    <script>
+
 async function loadBookings(){
 
 const { data, error } = await supabaseClient
@@ -1500,14 +1501,26 @@ const { data, error } = await supabaseClient
 .order('id', {ascending:false});
 
 if(error){
-   console.log(error);
-   return;
+console.log(error);
+return;
 }
 
 console.log(data);
 
 // Yaha table render karo
+
+}
+
+// Auto run when page loads
+loadBookings();
+
 </script>
+
+<!-- External JS ALWAYS LAST -->
+<script src="script.js"></script>
+
 </body>
 </html>
+
+
 
