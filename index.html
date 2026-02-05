@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MN Builders - ULTIMATE SYSTEM V3 (Adv)</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- ORIGINAL STYLES --- */
+        :root {
+            --bg-dark: #050505;
+            --card-bg: #121212;
+            --sidebar-bg: #000000;
+            --text-main: #e0e0e0;
+            --gold: #d4af37;
+            --gold-grad: linear-gradient(45deg, #d4af37, #f2d06b);
+            --blue: #0d6efd;
+            --green: #198754;
+            --red: #dc3545;
+            --border: #333;
+        }
+
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; overflow-x: hidden; }
+
+        /* --- UPDATED: FULL SCREEN SPLASH STYLES --- */
+        #splash_screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 10000; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease-out;
+        }
+        
+        /* Full Screen Image Setting - UPDATED to 'cover' */
+        #splash_screen img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures image covers WHOLE screen */
+            object-position: center;
+            z-index: 1;
+            opacity: 0.8; /* Slight dim for text readability */
+        }
+
+        /* Loading Bar at Bottom */
+        .loading-box {
+            position: absolute;
+            bottom: 60px; /* Position at bottom */
+            width: 70%;
+            max-width: 600px;
+            text-align: center;
+            z-index: 2; /* Above the image */
+            background: rgba(0,0,0,0.85); /* Dark background */
+            padding: 20px 40px;
+            border-radius: 50px;
+            border: 1px solid var(--gold);
+            box-shadow: 0 0 30px rgba(0,0,0,1);
+            backdrop-filter: blur(5px);
+        }
+        
+        .loading-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+            border: 1px solid #555;
+        }
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--gold-grad);
+            transition: width 0.1s linear;
+            box-shadow: 0 0 20px var(--gold);
+        }
+        .loading-text {
+            color: var(--gold);
+            margin-top: 10px;
+            font-size: 16px;
+            letter-spacing: 3px;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Lock Screen */
+        #lock_screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        .lock-box { background: #111; padding: 40px; border: 1px solid var(--gold); border-radius: 15px; text-align: center; width: 350px; box-shadow: 0 0 50px rgba(212, 175, 55, 0.2); }
+        .pin-input { background: #222; border: 1px solid #444; color: white; font-size: 24px; text-align: center; letter-spacing: 10px; width: 100%; margin-bottom: 20px; }
+
+        /* Sidebar & Main */
+        .sidebar { width: 260px; height: 100vh; background: var(--sidebar-bg); position: fixed; border-right: 1px solid #222; z-index: 100; overflow-y: auto; }
+        .brand { padding: 20px; text-align: center; border-bottom: 1px solid #222; }
+        .brand img { height: 60px; margin-bottom: 10px; filter: drop-shadow(0 0 5px var(--gold)); }
+        .brand h4 { font-weight: 800; color: white; letter-spacing: 1px; margin: 0; font-size: 18px; text-transform: uppercase; }
+        
+        .nav-link { padding: 12px 25px; color: #888; display: block; text-decoration: none; border-left: 3px solid transparent; transition: 0.3s; cursor: pointer; font-size: 14px; }
+        .nav-link:hover, .nav-link.active { background: #1a1a1a; color: var(--gold); border-left: 3px solid var(--gold); }
+        .nav-link i { width: 25px; }
+        
+        .main-content { margin-left: 260px; padding: 25px; }
+        .page-section { display: none; animation: fadeEffect 0.3s; }
+        .page-section.active { display: block; }
+        @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
+
+        /* Inputs & Cards */
+        .custom-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid #222; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .form-control, .form-select { background: #0a0a0a; border: 1px solid #333; color: white; padding: 10px; }
+        .form-control:focus, .form-select:focus { background: #0a0a0a; color: white; border-color: var(--gold); box-shadow: none; }
+        label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
+
+        /* Table */
+        .table-dark { background: transparent !important; --bs-table-bg: transparent; }
+        .table-dark th { background: #1a1a1a; color: var(--gold); border-bottom: 2px solid #333; padding: 15px; font-size: 13px; white-space: nowrap; }
+        .table-dark td { border-bottom: 1px solid #222; padding: 15px; color: #ccc; vertical-align: middle; font-size: 13px; }
+
+        /* Flat Chart */
+        .flat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        .flat-box { padding: 20px; border-radius: 10px; text-align: center; font-weight: bold; transition: 0.3s; border: 2px solid transparent; position: relative; }
+        .flat-box h3 { font-size: 24px; margin-bottom: 5px; }
+        .flat-box.available { background: #0f2e18; border-color: #2ecc71; color: #2ecc71; }
+        .flat-box.booked { background: #3c0909; border-color: #ff4d4d; color: #ff4d4d; }
+        .flat-status { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+        .flat-customer { font-size: 11px; color: #fff; background: rgba(255,255,255,0.1); padding: 4px; border-radius: 4px; display: block; margin-top: 5px; text-transform: uppercase; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+        /* Calculator */
+        .calc-body { background: #000; border: 2px solid #333; border-radius: 10px; padding: 15px; width: 100%; }
+        .calc-screen { width: 100%; height: 50px; background: #222; color: #fff; text-align: right; font-size: 24px; border: none; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .calc-keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-btn { padding: 15px; font-size: 18px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; background: #333; color: white; transition: 0.2s; }
+        .calc-btn:hover { background: #444; }
+        .calc-btn.operator { background: var(--gold); color: black; }
+        .calc-btn.clear { background: var(--red); color: white; }
+        .calc-btn.equal { background: var(--green); color: white; grid-column: span 2; }
+
+        /* Documents */
+        .receipt-card { width: 100%; max-width: 750px; margin: auto; background: #000000; border: 1px solid #333; color: #fff; font-family: 'Playfair Display', serif; position: relative; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        .receipt-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%); pointer-events: none; }
+        .receipt-header { border-bottom: 2px solid var(--gold); padding: 40px; text-align: center; background: linear-gradient(to bottom, #111, #000); }
+        .receipt-header h2 { color: var(--gold); letter-spacing: 2px; text-transform: uppercase; font-size: 28px; margin-bottom: 5px; }
+        .receipt-body { padding: 40px; font-family: 'Inter', sans-serif; }
+        .receipt-row { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .receipt-footer { margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .total-box h1 { font-size: 36px; color: #fff; margin: 0; }
+        .notice-subject { text-align: center; color: var(--gold); text-decoration: underline; margin-bottom: 20px; font-weight: bold; letter-spacing: 1px; }
+        .notice-table td { background: transparent; color: white; border-color: #444; }
+        
+        /* Progress & Stock */
+        .progress { height: 25px; background-color: #222; border-radius: 5px; margin-bottom: 20px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
+        .progress-bar { background-color: var(--gold); color: black; font-weight: bold; line-height: 25px; transition: width 1s ease-in-out; }
+        .stock-card { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px; }
+        .stock-val { font-size: 24px; font-weight: bold; color: var(--gold); }
+
+        /* --- NEW STYLES FOR ADD-ONS --- */
+        .sidebar-search { padding: 15px; border-bottom: 1px solid #222; }
+        .sidebar-search input { background: #111; color: white; border: 1px solid #333; font-size: 13px; }
+        .task-item { border-bottom: 1px solid #222; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .task-item.done span { text-decoration: line-through; color: #555; }
+        .profit-card { background: linear-gradient(45deg, #10b981, #065f46); color: white; }
+
+        @media print {
+            #splash_screen, #lock_screen, .sidebar, .no-print, .page-section:not(.active) { display: none !important; }
+            .main-content { margin: 0; padding: 0; background: #fff; }
+            body { background: #fff; color: #000; }
+            .receipt-card { border: 2px solid #000 !important; color: #000 !important; background: #fff !important; box-shadow: none !important; max-width: 100%; }
+            .receipt-card::before { display: none; }
+            .receipt-header { background: none !important; border-bottom: 2px solid #000 !important; }
+            .receipt-header h2, .receipt-row span, .total-box h1, .notice-subject { color: #000 !important; }
+            .receipt-row { border-bottom: 1px solid #ccc !important; }
+            .table-dark th { color: #000 !important; background: #eee !important; }
+            .table-dark td { color: #000 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="splash_screen">
+        <img src="splash.jpg" alt="Loading System" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1920&auto=format&fit=crop';">
+        
+        <div class="loading-box">
+            <h3 style="color:var(--gold); font-family:'Playfair Display', serif; margin-bottom:5px; text-shadow: 2px 2px 4px #000;">MN BUILDERS</h3>
+            <div class="loading-bar-container">
+                <div class="loading-bar" id="splash_bar"></div>
+            </div>
+            <div class="loading-text">LOADING SYSTEM... <span id="splash_percent">0%</span></div>
+        </div>
+    </div>
+
+    <div id="lock_screen">
+        <div class="lock-box">
+            <h3 style="color:var(--gold)">SECURITY ACCESS</h3>
+            <p style="color:#aaa; font-size:12px;">ENTER PIN CODE (Default: 4406)</p>
+            <input type="password" id="pin_input" class="form-control pin-input" maxlength="4" placeholder="****">
+            <button class="btn btn-warning w-100 fw-bold" onclick="unlockSystem()">UNLOCK</button>
+        </div>
+    </div>
+
+    <div class="sidebar no-print">
+        <div class="brand">
+            <img src="https://cdn-icons-png.flaticon.com/512/602/602175.png" alt="Building">
+            <h4 id="brand_name_sidebar">MN BUILDERS</h4>
+            <small style="color:var(--gold);">ULTIMATE V3 (Adv)</small>
+        </div>
+        
+        <div class="sidebar-search">
+            <input type="text" id="global_search" class="form-control" placeholder="🔍 Search Client..." onkeyup="searchGlobal()">
+        </div>
+
+        <div class="mt-2">
+            <a class="nav-link active" onclick="show('dashboard', this)"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a class="nav-link" onclick="show('entry', this)"><i class="fas fa-plus-square"></i> Entry Form</a>
+            <a class="nav-link" onclick="show('inventory', this)"><i class="fas fa-cubes"></i> Stock (Inventory)</a>
+            
+            <a class="nav-link" onclick="show('labor_manage', this)"><i class="fas fa-hard-hat"></i> Labor & Haziri <span class="badge bg-danger ms-1" style="font-size:8px;">NEW</span></a>
+            <a class="nav-link" onclick="show('tasks', this)"><i class="fas fa-tasks"></i> To-Do Tasks <span class="badge bg-warning ms-1" style="font-size:8px;">NEW</span></a>
+
+            <a class="nav-link" onclick="show('site_status', this)"><i class="fas fa-building"></i> Site Progress</a>
+            <a class="nav-link" onclick="show('site_tools', this)"><i class="fas fa-tools"></i> Site Tools & Calc</a>
+            <a class="nav-link" onclick="show('expenses', this)"><i class="fas fa-wallet"></i> Expenses</a>
+            <a class="nav-link" onclick="show('plaza', this)"><i class="fas fa-money-bill-wave"></i> <span id="menu_plaza_text">AYSHA PLAZA</span></a>
+            <a class="nav-link" onclick="show('flatchart', this)"><i class="fas fa-th"></i> Flat Status</a>
+            <a class="nav-link" onclick="show('data', this)"><i class="fas fa-database"></i> All Records</a>
+            <a class="nav-link" onclick="show('ledger', this)"><i class="fas fa-book-open"></i> Client Ledger</a>
+            <a class="nav-link" onclick="show('documents', this)"><i class="fas fa-file-invoice"></i> Documents</a>
+            <a class="nav-link" onclick="show('receipt', this)"><i class="fas fa-receipt"></i> Receipt Gen</a>
+            <a class="nav-link" onclick="show('emi_calc', this)"><i class="fas fa-calculator"></i> EMI Calculator</a>
+            <hr style="border-color:#333;">
+            <a class="nav-link" onclick="show('settings', this)"><i class="fas fa-cogs"></i> Settings</a>
+            <a class="nav-link" onclick="show('backup', this)"><i class="fas fa-cloud-download-alt"></i> Backup Data</a>
+            
+            <hr style="border-color:#333;">
+            <a class="nav-link text-danger" onclick="exitSystem()"><i class="fas fa-power-off"></i> EXIT SYSTEM</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+
+        <div id="dashboard" class="page-section active">
+            <h3 class="mb-4">Dashboard</h3>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3"><div class="custom-card text-center"><div class="stat-val text-white" id="d_book">0</div><small>Bookings</small></div></div>
+                <div class="col-md-3"><div class="custom-card text-center"><div class="stat-val text-success">₹<span id="d_rec">0</span></div><small>Received</small></div></div>
+                <div class="col-md-3"><div class="custom-card text-center"><div class="stat-val text-danger">₹<span id="d_pen">0</span></div><small>Pending</small></div></div>
+                <div class="col-md-3"><div class="custom-card text-center" style="background:#2c0b4f;"><div class="stat-val text-white">₹<span id="d_today">0</span></div><small>Today</small></div></div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="custom-card profit-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5><i class="fas fa-funnel-dollar"></i> NET PROFIT</h5>
+                                <small>(Received + Plaza) - Expenses</small>
+                            </div>
+                            <h2 class="m-0 fw-bold">₹ <span id="d_profit">0</span></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="custom-card border-danger">
+                        <h6 class="text-danger"><i class="fas fa-exclamation-triangle"></i> LOW STOCK ALERTS</h6>
+                        <div id="d_alerts" class="text-muted small">All stock levels are good.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="custom-card" style="height: 400px;">
+                        <canvas id="finChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="custom-card">
+                        <h5 class="text-white mb-3">Quick Site Status</h5>
+                        <small>Foundation</small><div class="progress"><div class="progress-bar bg-success" id="d_prog_found" style="width: 0%">0%</div></div>
+                        <small>Brick Work</small><div class="progress"><div class="progress-bar bg-warning" id="d_prog_brick" style="width: 0%">0%</div></div>
+                        <small>Plaster</small><div class="progress"><div class="progress-bar bg-info" id="d_prog_plaster" style="width: 0%">0%</div></div>
+                        <button class="btn btn-outline-warning btn-sm w-100 mt-2" onclick="show('site_status', null)">Update Status</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="labor_manage" class="page-section">
+            <h3 class="mb-4">Labor Management & Attendance</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="custom-card">
+                        <h5 class="text-warning mb-3">Add New Worker</h5>
+                        <label>Worker Name</label>
+                        <input type="text" id="lbr_name" class="form-control mb-2">
+                        <label>Role</label>
+                        <select id="lbr_role" class="form-select mb-2">
+                            <option>Mistri</option>
+                            <option>Helper (Bigari)</option>
+                            <option>Supervisor</option>
+                        </select>
+                        <label>Daily Wage (₹)</label>
+                        <input type="number" id="lbr_wage" class="form-control mb-3">
+                        <button class="btn btn-warning w-100" onclick="addWorker()">Save Worker</button>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="custom-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="text-white m-0">Daily Attendance</h5>
+                            <input type="date" id="lbr_date" class="form-control w-auto py-1" onchange="renderAttendance()">
+                        </div>
+                        <table class="table table-dark">
+                            <thead><tr><th>Name</th><th>Wage</th><th>Status</th><th>Payable</th><th>Action</th></tr></thead>
+                            <tbody id="lbr_table"></tbody>
+                        </table>
+                        <div class="text-end mt-3">
+                            <h4 class="text-warning">Total Payout: ₹ <span id="lbr_total_pay">0</span></h4>
+                            <button class="btn btn-success" onclick="saveAttendance()">Save Today's Record</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tasks" class="page-section">
+            <h3 class="mb-4">Task Manager (To-Do)</h3>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="custom-card">
+                        <div class="input-group mb-3">
+                            <input type="text" id="task_input" class="form-control" placeholder="What needs to be done?">
+                            <button class="btn btn-warning" onclick="addTask()">Add Task</button>
+                        </div>
+                        <div id="task_list" style="max-height: 400px; overflow-y: auto;">
+                            </div>
+                        <div class="mt-3 text-end">
+                            <button class="btn btn-outline-danger btn-sm" onclick="clearTasks()">Clear Completed</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="site_tools" class="page-section">
+            <h3 class="mb-4">Site Tools & Daily Reports</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="custom-card border-primary" style="height:100%">
+                        <h5 class="text-primary mb-3"><i class="fas fa-ruler-combined"></i> CIVIL UNIT CONVERTER</h5>
+                        <h6 class="text-muted mt-3">Length</h6>
+                        <div class="row g-2">
+                            <div class="col-6"><label>Feet (ft)</label><input type="number" id="conv_feet" class="form-control" oninput="convertLength('ft')"></div>
+                            <div class="col-6"><label>Meter (m)</label><input type="number" id="conv_meter" class="form-control" oninput="convertLength('mt')"></div>
+                        </div>
+                        <h6 class="text-muted mt-3">Area</h6>
+                        <div class="row g-2">
+                            <div class="col-4"><label>Sq. Feet</label><input type="number" id="conv_sqft" class="form-control" oninput="convertArea('sqft')"></div>
+                            <div class="col-4"><label>Brass</label><input type="number" id="conv_brass" class="form-control" oninput="convertArea('brass')"></div>
+                            <div class="col-4"><label>Guntha</label><input type="number" id="conv_guntha" class="form-control" oninput="convertArea('guntha')"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="custom-card border-danger" style="height:100%">
+                        <h5 class="text-danger mb-3"><i class="fas fa-hard-hat"></i> QUICK LABOR CALCULATOR</h5>
+                        <p class="text-muted" style="font-size:12px;">(For quick calc only. Use 'Labor & Haziri' menu for saving records)</p>
+                        <div class="row g-2 mb-2">
+                            <div class="col-4"><label>Mistri Qty</label><input type="number" id="dlr_m_qty" class="form-control" placeholder="0"></div>
+                            <div class="col-4"><label>Rate</label><input type="number" id="dlr_m_rate" class="form-control" value="800"></div>
+                            <div class="col-4"><label>Total</label><input type="text" id="dlr_m_tot" class="form-control" readonly style="background:#222;"></div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-4"><label>Helper Qty</label><input type="number" id="dlr_h_qty" class="form-control" placeholder="0"></div>
+                            <div class="col-4"><label>Rate</label><input type="number" id="dlr_h_rate" class="form-control" value="500"></div>
+                            <div class="col-4"><label>Total</label><input type="text" id="dlr_h_tot" class="form-control" readonly style="background:#222;"></div>
+                        </div>
+                        <button class="btn btn-danger w-100 mb-3" onclick="calcLabor()">Calculate Total</button>
+                        <div class="text-center p-2" style="background:#330000; border:1px dashed red; border-radius:8px;">
+                            <small class="text-white">TODAY'S TOTAL PAYOUT</small>
+                            <h2 class="text-danger m-0">₹ <span id="dlr_final">0</span></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="inventory" class="page-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3>Stock Management (Inventory)</h3>
+                <button class="btn btn-warning" onclick="resetStockForm()">Clear Form</button>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="custom-card border-warning">
+                        <h6 class="text-warning mb-3"><i class="fas fa-truck-loading"></i> NEW TRANSACTION</h6>
+                        <label>Material Name</label>
+                        <select id="inv_item" class="form-select mb-2">
+                            <option value="Cement">Cement (Bags)</option>
+                            <option value="Steel">Steel (Ton)</option>
+                            <option value="Bricks">Bricks (Nos)</option>
+                            <option value="Sand">Sand (Brass)</option>
+                            <option value="Aggregates">Aggregates / Khadi</option>
+                            <option value="Tiles">Tiles (Box)</option>
+                        </select>
+                        <label>Transaction Type</label>
+                        <select id="inv_type" class="form-select mb-2">
+                            <option value="IN" style="color:lightgreen;">PURCHASE (IN)</option>
+                            <option value="OUT" style="color:salmon;">USED (OUT)</option>
+                        </select>
+                        <label>Quantity</label>
+                        <input type="number" id="inv_qty" class="form-control mb-2" placeholder="0">
+                        <label>Date</label>
+                        <input type="date" id="inv_date" class="form-control mb-3">
+                        <label>Note / Supplier</label>
+                        <input type="text" id="inv_note" class="form-control mb-3" placeholder="Optional">
+                        <button class="btn btn-warning w-100 fw-bold" onclick="saveStock()">Save Entry</button>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-3"><div class="stock-card"><small>Cement Bal</small><div class="stock-val" id="stock_cement">0</div></div></div>
+                        <div class="col-md-3"><div class="stock-card"><small>Steel Bal</small><div class="stock-val" id="stock_steel">0</div></div></div>
+                        <div class="col-md-3"><div class="stock-card"><small>Bricks Bal</small><div class="stock-val" id="stock_bricks">0</div></div></div>
+                        <div class="col-md-3"><div class="stock-card"><small>Sand Bal</small><div class="stock-val" id="stock_sand">0</div></div></div>
+                    </div>
+                    <div class="custom-card">
+                        <h5 class="mb-3">Transaction History</h5>
+                        <div style="max-height: 400px; overflow-y:auto;">
+                            <table class="table table-dark table-hover">
+                                <thead><tr><th>Date</th><th>Item</th><th>Type</th><th>Qty</th><th>Note</th><th>Act</th></tr></thead>
+                                <tbody id="inv_body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="site_status" class="page-section">
+            <h3 class="mb-4">Site Construction Progress</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="custom-card">
+                        <h5 class="text-warning mb-4">Update Progress (%)</h5>
+                        <label>Foundation Work</label><input type="range" class="form-range" min="0" max="100" id="rng_found" oninput="updateRangeLabel('lbl_found', this.value)"><div class="text-end mb-3 text-warning" id="lbl_found">100%</div>
+                        <label>Plinth Level</label><input type="range" class="form-range" min="0" max="100" id="rng_plinth" oninput="updateRangeLabel('lbl_plinth', this.value)"><div class="text-end mb-3 text-warning" id="lbl_plinth">100%</div>
+                        <label>1st Slab Casting</label><input type="range" class="form-range" min="0" max="100" id="rng_slab" oninput="updateRangeLabel('lbl_slab', this.value)"><div class="text-end mb-3 text-warning" id="lbl_slab">100%</div>
+                        <label>Brick Work / Masonry</label><input type="range" class="form-range" min="0" max="100" id="rng_brick" oninput="updateRangeLabel('lbl_brick', this.value)"><div class="text-end mb-3 text-warning" id="lbl_brick">60%</div>
+                        <label>Plastering (Internal/External)</label><input type="range" class="form-range" min="0" max="100" id="rng_plaster" oninput="updateRangeLabel('lbl_plaster', this.value)"><div class="text-end mb-3 text-warning" id="lbl_plaster">0%</div>
+                        <button class="btn btn-success w-100 mt-3" onclick="saveProgress()">Save Progress</button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="custom-card" style="min-height: 100%;">
+                        <h5 class="text-white mb-4">Visual Status</h5>
+                        <div class="mb-4"><div class="d-flex justify-content-between mb-1"><span>Foundation</span><span id="vis_found_val">100%</span></div><div class="progress" style="height: 30px;"><div class="progress-bar bg-success" id="vis_found" style="width: 100%">Completed</div></div></div>
+                        <div class="mb-4"><div class="d-flex justify-content-between mb-1"><span>Plinth</span><span id="vis_plinth_val">100%</span></div><div class="progress" style="height: 30px;"><div class="progress-bar bg-success" id="vis_plinth" style="width: 100%">Completed</div></div></div>
+                        <div class="mb-4"><div class="d-flex justify-content-between mb-1"><span>1st Slab</span><span id="vis_slab_val">100%</span></div><div class="progress" style="height: 30px;"><div class="progress-bar bg-success" id="vis_slab" style="width: 100%">Completed</div></div></div>
+                        <div class="mb-4"><div class="d-flex justify-content-between mb-1"><span>Brick Work</span><span id="vis_brick_val">60%</span></div><div class="progress" style="height: 30px;"><div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" id="vis_brick" style="width: 60%">Ongoing</div></div></div>
+                        <div class="mb-4"><div class="d-flex justify-content-between mb-1"><span>Plaster</span><span id="vis_plaster_val">0%</span></div><div class="progress" style="height: 30px;"><div class="progress-bar bg-secondary" id="vis_plaster" style="width: 0%">Pending</div></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="emi_calc" class="page-section">
+            <h3 class="mb-4">Loan EMI Calculator</h3>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="custom-card">
+                        <label>Loan Amount (₹)</label><input type="number" id="emi_amt" class="form-control mb-3" placeholder="e.g. 1000000">
+                        <label>Interest Rate (% per annum)</label><input type="number" id="emi_rate" class="form-control mb-3" placeholder="e.g. 8.5">
+                        <label>Tenure (Years)</label><input type="number" id="emi_years" class="form-control mb-4" placeholder="e.g. 15">
+                        <button class="btn btn-primary w-100 mb-4" onclick="calculateEMI()">Calculate EMI</button>
+                        <div class="text-center p-3" style="background: #222; border-radius: 10px; border: 1px dashed var(--gold);">
+                            <small class="text-muted">Monthly EMI</small>
+                            <h2 class="text-warning mt-2">₹ <span id="emi_result">0</span></h2>
+                            <small class="text-muted">Total Interest: ₹ <span id="emi_total_int">0</span></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="entry" class="page-section">
+            <h3 class="mb-3">Entry Form</h3>
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="custom-card" style="border-top: 3px solid var(--gold);">
+                        <h6 class="text-warning mb-3">PENDING PAYMENT ADJUSTMENT</h6>
+                        <div class="row g-2 align-items-end">
+                            <div class="col-md-2">
+                                <label>Flat No</label>
+                                <select id="p_flat" class="form-select" onchange="loadPendingDetails()">
+                                    <option value="">Select</option>
+                                    <option>G001</option><option>101</option><option>102</option><option>201</option><option>202</option>
+                                    <option>301</option><option>302</option><option>401</option><option>402</option><option>501</option><option>502</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2"><label>Name</label><input id="p_name" class="form-control" readonly></div>
+                            <div class="col-md-2"><label>Balance</label><input id="p_bal" class="form-control" readonly></div>
+                            <div class="col-md-2"><label>Date</label><input type="date" id="p_date" class="form-control"></div>
+                            <div class="col-md-2"><label>Mode</label><select id="p_mode" class="form-select"><option>Cash</option><option>UPI</option><option>Cheque</option><option>Bank</option></select></div>
+                            <div class="col-md-2"><label>Amount</label><input type="number" id="p_pay" class="form-control"></div>
+                            <div class="col-md-12 text-end mt-2"><button class="btn btn-warning px-4 fw-bold" onclick="adjustPayment()">Adjust Payment</button></div>
+                        </div>
+                    </div>
+
+                    <div class="custom-card" style="border-top: 3px solid var(--blue);">
+                        <h6 class="text-primary mb-3">NEW BOOKING ENTRY</h6>
+                        <div class="row g-3">
+                            <div class="col-md-3"><label>Customer Name</label><input id="nb_name" class="form-control"></div>
+                            <div class="col-md-3"><label>Mobile</label><input id="nb_mobile" class="form-control"></div>
+                            <div class="col-md-3"><label>Flat No</label>
+                                <select id="nb_flat" class="form-select">
+                                    <option value="">Select Flat</option>
+                                    <option>G001</option><option>101</option><option>102</option><option>201</option><option>202</option>
+                                    <option>301</option><option>302</option><option>401</option><option>402</option><option>501</option><option>502</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3"><label>Floor</label><select id="nb_floor" class="form-select"><option>Ground Floor</option><option>First Floor</option><option>Second Floor</option><option>Third Floor</option><option>Fourth Floor</option><option>Fifth Floor</option></select></div>
+                            <div class="col-md-3"><label>Flat Type</label><select id="nb_type" class="form-select"><option>1BHK</option><option>2BHK</option></select></div>
+                            <div class="col-md-2"><label>SqFt</label><input type="number" id="nb_sqft" class="form-control"></div>
+                            <div class="col-md-3"><label>Date</label><input type="date" id="nb_date" class="form-control"></div>
+                            <div class="col-md-4"><label>Total Value</label><input type="number" id="nb_total" class="form-control"></div>
+                            <div class="col-md-4"><label>Advance</label><input type="number" id="nb_adv" class="form-control"></div>
+                            <div class="col-md-4"><label>Payment Mode</label><select id="nb_mode" class="form-select"><option>Cash</option><option>UPI</option><option>Cheque</option><option>Bank</option></select></div>
+                            <div class="col-12 text-end"><button class="btn btn-primary px-5" onclick="saveBooking()">Save Booking</button></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <h6 class="text-muted text-center mb-3">CALCULATOR</h6>
+                    <div class="calc-body">
+                        <input type="text" class="calc-screen" id="calc_display" readonly>
+                        <div class="calc-keys">
+                            <button class="calc-btn clear" onclick="clearCalc()">C</button><button class="calc-btn operator" onclick="addToCalc('/')">/</button><button class="calc-btn operator" onclick="addToCalc('*')">x</button><button class="calc-btn operator" onclick="backSpace()"><i class="fas fa-backspace"></i></button>
+                            <button class="calc-btn" onclick="addToCalc('7')">7</button><button class="calc-btn" onclick="addToCalc('8')">8</button><button class="calc-btn" onclick="addToCalc('9')">9</button><button class="calc-btn operator" onclick="addToCalc('-')">-</button>
+                            <button class="calc-btn" onclick="addToCalc('4')">4</button><button class="calc-btn" onclick="addToCalc('5')">5</button><button class="calc-btn" onclick="addToCalc('6')">6</button><button class="calc-btn operator" onclick="addToCalc('+')">+</button>
+                            <button class="calc-btn" onclick="addToCalc('1')">1</button><button class="calc-btn" onclick="addToCalc('2')">2</button><button class="calc-btn" onclick="addToCalc('3')">3</button><button class="calc-btn equal" onclick="calculateResult()">=</button>
+                            <button class="calc-btn" style="grid-column: span 2;" onclick="addToCalc('0')">0</button><button class="calc-btn" onclick="addToCalc('.')">.</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="plaza" class="page-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="m-0" id="header_plaza_text">AYSHA PLAZA</h3>
+                <h3 class="m-0 text-warning">Total: ₹<span id="plaza_total_disp">0</span></h3>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="custom-card">
+                        <h6 class="text-primary mb-3"><i class="fas fa-plus-circle"></i> ADD NEW RECORD</h6>
+                        <label>Name</label><input id="plaza_name" class="form-control mb-2">
+                        <label>Date</label><input type="date" id="plaza_date" class="form-control mb-2">
+                        <label>Payment (₹)</label><input type="number" id="plaza_pay" class="form-control mb-2">
+                        <label>Mobile No.</label><input id="plaza_mobile" class="form-control mb-3">
+                        <button class="btn btn-primary w-100" onclick="savePlaza()">Add Payment</button>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="custom-card">
+                        <div style="max-height: 500px; overflow-y:auto;">
+                            <table class="table table-dark table-hover">
+                                <thead><tr><th>NAME</th><th>DATE</th><th>PAYMENT</th><th>MOBILE NO</th><th>ACTION</th></tr></thead>
+                                <tbody id="plaza_body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="expenses" class="page-section">
+            <h3 class="mb-4">Expense Manager</h3>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="custom-card">
+                        <h6 class="text-danger mb-3"><i class="fas fa-minus-circle"></i> ADD EXPENSE</h6>
+                        <label>Supplier Name</label><input id="exp_sup" class="form-control mb-2" placeholder="Supplier Name">
+                        <label>Item Name</label><input id="exp_desc" class="form-control mb-2" placeholder="e.g. Cement">
+                        <label>Rate (₹)</label><input type="number" id="exp_rate" class="form-control mb-2" placeholder="Price per unit" oninput="calcExpTotal()">
+                        <label>Qty</label><input type="number" id="exp_qty" class="form-control mb-2" placeholder="Quantity" oninput="calcExpTotal()">
+                        <label>Total Amount (₹)</label><input type="number" id="exp_amt" class="form-control mb-2" readonly style="background:#222; border-color:var(--gold);">
+                        <label>Paid (₹)</label><input type="number" id="exp_paid" class="form-control mb-2">
+                        <label>Date</label><input type="date" id="exp_date" class="form-control mb-3">
+                        <button class="btn btn-danger w-100" onclick="saveExpense()">Save Expense</button>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="custom-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="m-0 text-white">Expense Records</h5>
+                            <h5 class="m-0 text-danger">Total Out: ₹<span id="exp_total_disp">0</span></h5>
+                        </div>
+                        <div style="max-height: 500px; overflow-y:auto;">
+                            <table class="table table-dark">
+                                <thead><tr><th>SUPPLIER</th><th>ITEM</th><th>RATE</th><th>QTY</th><th>AMOUNT</th><th>PAID</th><th>PENDING</th><th>DATE</th><th>ACTION</th></tr></thead>
+                                <tbody id="exp_body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="flatchart" class="page-section">
+            <h3 class="mb-4">Flat Status Chart</h3>
+            <div class="custom-card">
+                <div class="flat-grid" id="flat_grid_view"></div>
+            </div>
+            <div class="mt-3">
+                <span class="badge bg-success me-2">OPEN</span> Available
+                <span class="badge bg-danger ms-3 me-2">LOCKED</span> Booked
+            </div>
+        </div>
+
+        <div id="data" class="page-section">
+            <h3 class="mb-3">All Data</h3>
+            <div class="custom-card table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead><tr><th>Customer</th><th>Flat</th><th>Type</th><th>Total</th><th>Paid</th><th>BALANCE</th><th>Remarks</th><th>Action</th></tr></thead>
+                    <tbody id="table_body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="ledger" class="page-section">
+            <h3 class="mb-3">Ledger</h3>
+            <select id="l_search" class="form-select mb-3" onchange="searchLedger()">
+                <option value="">Select Flat to View Ledger</option>
+            </select>
+            
+            <div id="ledger_view" class="custom-card" style="display:none;">
+                <h4 class="text-white" id="l_cust">NAME</h4>
+                <table class="table table-dark"><thead><tr><th>Date</th><th>Mode</th><th>Paid</th><th>Balance</th></tr></thead><tbody id="l_history"></tbody></table>
+            </div>
+        </div>
+
+        <div id="documents" class="page-section">
+            <h3 class="mb-3">Document Generator</h3>
+            <div class="row">
+                <div class="col-md-4 no-print">
+                    <div class="custom-card">
+                        <h6 class="text-primary mb-3">PAYMENT REMINDER NOTICE</h6>
+                        <label>Select Flat Number</label>
+                        <select id="doc_select" class="form-select mb-3"></select>
+                        <button class="btn btn-primary w-100 mb-2" onclick="genNotice()">Generate Notice</button>
+                        <button class="btn btn-success w-100" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div id="doc_preview" style="display:none;">
+                        <div class="receipt-card">
+                            <div class="receipt-header">
+                                <h2 id="doc_co_name">MN BUILDERS</h2>
+                                <small id="doc_co_tag">PREMIUM DEVELOPERS & CONTRACTORS</small><br>
+                                <small style="color:#666; font-size:9px;" id="doc_co_addr">ADDRESS HERE</small>
+                            </div>
+                            <div class="receipt-body">
+                                <h4 class="notice-subject">OUTSTANDING PAYMENT NOTICE</h4>
+                                <div class="receipt-row"><span>To Customer</span><span id="notice_name">Name</span></div>
+                                <div class="receipt-row"><span>Flat Number</span><span id="notice_flat">101</span></div>
+                                <div class="receipt-row"><span>Notice Date</span><span id="notice_date">01/01/2026</span></div>
+                                <br>
+                                <table class="table table-dark table-sm notice-table">
+                                    <tr><td>Total Agreement Value</td><td class="text-end">₹ <span id="notice_total">0</span></td></tr>
+                                    <tr><td>Total Paid</td><td class="text-end text-success">₹ <span id="notice_paid">0</span></td></tr>
+                                    <tr style="border-top:2px solid var(--gold);"><td><strong>PENDING DUE</strong></td><td class="text-end text-danger fw-bold">₹ <span id="notice_due">0</span></td></tr>
+                                </table>
+                                <p class="text-center mt-4" style="color:#ccc; font-size:12px;">Please clear the outstanding dues within 7 days.</p>
+                                <div class="receipt-footer">
+                                    <div><small style="color:#666;">CUSTOMER SIGN</small></div>
+                                    <div><div style="height: 1px; width: 100px; background: #444; margin-bottom: 5px;"></div><small style="color:#666;">AUTHORIZED SIGN</small></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="receipt" class="page-section">
+            <h3 class="mb-3 no-print">Receipt Generator</h3>
+            <div class="no-print mb-4 d-flex gap-2 align-items-center">
+                <select id="rec_select" class="form-select w-25"></select>
+                <button class="btn btn-warning" onclick="genRec()">Preview</button>
+                <button class="btn btn-success" onclick="window.print()">Print</button>
+            </div>
+            <div id="rec_view" style="display:none;">
+                <div class="receipt-card">
+                    <div class="receipt-header">
+                        <h2 id="rec_co_name_r">MN BUILDERS</h2>
+                        <small id="rec_co_tag_r">PREMIUM DEVELOPERS & CONTRACTORS</small><br>
+                        <small style="color:#666; font-size:9px;" id="rec_co_addr_r">ADDRESS HERE</small>
+                    </div>
+                    <div class="receipt-body">
+                        <div class="receipt-row"><span>To Customer</span><span id="r_name">NAME</span></div>
+                        <div class="receipt-row"><span>Receipt Date</span><span id="r_date">DATE</span></div>
+                        <div class="receipt-row"><span>Property Details</span><span id="r_flat">FLAT</span></div>
+                        <div class="receipt-row"><span>Total Deal Value</span><span id="r_total">0</span></div>
+                        <div class="receipt-row"><span>Payment Mode</span><span id="r_mode">CASH</span></div>
+                        <div class="receipt-row" style="border-bottom: 2px solid var(--gold);"><span>Total Paid (Till Date)</span><span style="color: #4cd137;">₹ <span id="r_paid">0</span></span></div>
+                        <div class="receipt-footer">
+                            <div><div style="height: 1px; width: 100px; background: #444; margin-bottom: 5px;"></div><small style="color:#666;">AUTHORIZED SIGN</small></div>
+                            <div class="total-box"><div>PENDING BALANCE</div><h1>₹<span id="r_bal">0</span></h1></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="settings" class="page-section">
+            <h3 class="mb-4">System Settings</h3>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="custom-card">
+                        <h6 class="text-primary mb-3">COMPANY PROFILE</h6>
+                        <label>Company Name</label><input id="set_name" class="form-control mb-3">
+                        <label>Tagline</label><input id="set_tag" class="form-control mb-3">
+                        <label>Address</label><textarea id="set_addr" class="form-control mb-3" rows="3"></textarea>
+                        <hr style="border-color:#333">
+                        <h6 class="text-warning mb-3">CUSTOMIZATION</h6>
+                        <label>Module Name (Default: AYSHA PLAZA)</label><input id="set_crm_name" class="form-control mb-3">
+                        <button class="btn btn-primary px-4" onclick="saveSettings()">Save Configuration</button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="custom-card border-danger">
+                        <h6 class="text-danger mb-3">DANGER ZONE</h6>
+                        <button class="btn btn-outline-danger w-100" onclick="resetAllData()">Factory Reset System</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="backup" class="page-section">
+            <h3 class="mb-3">Backup & Recovery</h3>
+            
+            <div class="custom-card border-warning">
+                <h5 class="text-warning">UPDATE EXCEL FILE (One Click)</h5>
+                <p class="text-muted">Click this button to update/download the latest Excel file with all sheets (Entries, Plaza, Expenses, Inventory, Status, Ledger, Labor).<br>
+                <small style="color:#888;">Note: Save it with the name <strong>MN_Data.xlsx</strong></small></p>
+                <button class="btn btn-warning fw-bold px-4 w-100" style="height: 50px; font-size: 18px;" onclick="exportToExcel()"><i class="fas fa-sync-alt"></i> UPDATE & DOWNLOAD EXCEL</button>
+            </div>
+
+            <hr>
+            
+            <h5 class="text-white">System Backup (JSON)</h5>
+            <button class="btn btn-success mb-2" onclick="backup()">Download Backup</button>
+            <input type="file" id="restoreFile" class="form-control mb-2">
+            <button class="btn btn-primary" onclick="restore()">Restore File</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- SPLASH SCREEN LOADING LOGIC ---
+        window.addEventListener('load', function() {
+            let percent = 0;
+            let bar = document.getElementById('splash_bar');
+            let txt = document.getElementById('splash_percent');
+            let splash = document.getElementById('splash_screen');
+            
+            // Start Loading Simulation
+            let interval = setInterval(() => {
+                percent++;
+                bar.style.width = percent + "%";
+                txt.innerText = percent + "%";
+                
+                if (percent >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        // Fade out splash
+                        splash.style.opacity = 0;
+                        setTimeout(() => {
+                            splash.style.display = "none";
+                            // Lock screen is underneath, so it will now be visible
+                        }, 1000);
+                    }, 500);
+                }
+            }, 30); // Speed: 30ms * 100 = 3 seconds
+        });
+
+        const DB_KEY = 'MN_2026_PRO';
+        const PLAZA_KEY = 'MN_PLAZA_DATA'; 
+        const EXP_KEY = 'MN_EXPENSES_DATA';
+        const SET_KEY = 'MN_SETTINGS_DATA';
+        const STOCK_KEY = 'MN_STOCK_DATA';
+        const PROG_KEY = 'MN_PROG_DATA';
+        
+        // --- NEW KEYS FOR ADD-ONS ---
+        const LABOR_KEY = 'MN_LABOR_DATA';
+        const TASK_KEY = 'MN_TASK_DATA';
+
+        let db = JSON.parse(localStorage.getItem(DB_KEY)) || [];
+        let plazaData = JSON.parse(localStorage.getItem(PLAZA_KEY)) || [];
+        let expenses = JSON.parse(localStorage.getItem(EXP_KEY)) || [];
+        let stockData = JSON.parse(localStorage.getItem(STOCK_KEY)) || [];
+        let laborData = JSON.parse(localStorage.getItem(LABOR_KEY)) || { workers: [], attendance: {} };
+        let taskData = JSON.parse(localStorage.getItem(TASK_KEY)) || [];
+        
+        let defaultProgress = { foundation: 100, plinth: 100, slab: 100, brick: 60, plaster: 0 };
+        let progressData = JSON.parse(localStorage.getItem(PROG_KEY)) || defaultProgress;
+
+        let defaultSettings = {
+            name: "MN BUILDERS",
+            tagline: "PREMIUM DEVELOPERS & CONTRACTORS",
+            address: "AT POST DAPOLI ST STAND BACK KALAM GALI PIN 415712",
+            crmName: "AYSHA PLAZA"
+        };
+        let settings = JSON.parse(localStorage.getItem(SET_KEY)) || defaultSettings;
+
+        const flatList = ["G001","101","102","201","202","301","302","401","402","501","502"];
+        
+        // --- LOCK SCREEN ---
+        function unlockSystem() {
+            if(document.getElementById('pin_input').value === "4406") document.getElementById('lock_screen').style.display = "none";
+            else alert("Incorrect PIN");
+        }
+        document.getElementById('pin_input').addEventListener("keypress", function(event) { if (event.key === "Enter") unlockSystem(); });
+
+        // --- CALCULATOR ---
+        function addToCalc(v) { document.getElementById('calc_display').value += v; }
+        function clearCalc() { document.getElementById('calc_display').value = ""; }
+        function backSpace() { let v = document.getElementById('calc_display').value; document.getElementById('calc_display').value = v.substring(0, v.length - 1); }
+        function calculateResult() { try { document.getElementById('calc_display').value = eval(document.getElementById('calc_display').value); } catch(e) { alert("Error"); } }
+
+        // --- EMI CALCULATOR ---
+        function calculateEMI() {
+            let P = parseFloat(document.getElementById('emi_amt').value) || 0;
+            let R = parseFloat(document.getElementById('emi_rate').value) || 0;
+            let Y = parseFloat(document.getElementById('emi_years').value) || 0;
+
+            if(P > 0 && R > 0 && Y > 0) {
+                let r = (R / 12) / 100; // monthly rate
+                let n = Y * 12; // months
+                let emi = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+                let totalPay = emi * n;
+                
+                document.getElementById('emi_result').innerText = Math.round(emi).toLocaleString('en-IN');
+                document.getElementById('emi_total_int').innerText = Math.round(totalPay - P).toLocaleString('en-IN');
+            } else {
+                alert("Please enter valid details");
+            }
+        }
+
+        // --- CIVIL CONVERTER ---
+        function convertLength(type) {
+            let ft = document.getElementById('conv_feet');
+            let mt = document.getElementById('conv_meter');
+            if(type === 'ft') mt.value = (ft.value / 3.28084).toFixed(3);
+            else ft.value = (mt.value * 3.28084).toFixed(3);
+        }
+        function convertArea(type) {
+            let sq = document.getElementById('conv_sqft');
+            let br = document.getElementById('conv_brass');
+            let gu = document.getElementById('conv_guntha');
+            
+            let val = parseFloat(type === 'sqft' ? sq.value : (type === 'brass' ? br.value * 100 : gu.value * 1089)) || 0;
+            
+            if(type !== 'sqft') sq.value = val.toFixed(2);
+            if(type !== 'brass') br.value = (val / 100).toFixed(2);
+            if(type !== 'guntha') gu.value = (val / 1089).toFixed(3);
+        }
+
+        // --- SIMPLE LABOR REPORT (Calculator) ---
+        function calcLabor() {
+            let mQty = parseFloat(document.getElementById('dlr_m_qty').value) || 0;
+            let mRate = parseFloat(document.getElementById('dlr_m_rate').value) || 0;
+            let hQty = parseFloat(document.getElementById('dlr_h_qty').value) || 0;
+            let hRate = parseFloat(document.getElementById('dlr_h_rate').value) || 0;
+            let mTot = mQty * mRate;
+            let hTot = hQty * hRate;
+            document.getElementById('dlr_m_tot').value = mTot;
+            document.getElementById('dlr_h_tot').value = hTot;
+            document.getElementById('dlr_final').innerText = (mTot + hTot);
+        }
+
+        // --- NEW: LABOR MANAGEMENT LOGIC (Advanced) ---
+        function addWorker() {
+            let name = document.getElementById('lbr_name').value;
+            let role = document.getElementById('lbr_role').value;
+            let wage = parseFloat(document.getElementById('lbr_wage').value) || 0;
+            if(!name) return alert("Worker Name Required");
+            laborData.workers.push({name, role, wage});
+            localStorage.setItem(LABOR_KEY, JSON.stringify(laborData));
+            document.getElementById('lbr_name').value = "";
+            renderAttendance();
+            alert("Worker Added");
+        }
+
+        function renderAttendance() {
+            let date = document.getElementById('lbr_date').value || new Date().toISOString().split('T')[0];
+            document.getElementById('lbr_date').value = date;
+            
+            let tbody = document.getElementById('lbr_table'); tbody.innerHTML = "";
+            let records = laborData.attendance[date] || [];
+            let totalPay = 0;
+
+            laborData.workers.forEach((w, i) => {
+                let rec = records.find(r => r.name === w.name);
+                let status = rec ? rec.status : 'Present';
+                let pay = 0;
+                
+                if(status === 'Present') pay = w.wage;
+                else if(status === 'Half Day') pay = w.wage / 2;
+                
+                totalPay += pay;
+
+                tbody.innerHTML += `<tr>
+                    <td>${w.name}<br><small style="font-size:10px; color:#aaa;">${w.role}</small></td>
+                    <td>${w.wage}</td>
+                    <td>
+                        <select class="form-select form-select-sm" id="lbr_stat_${i}" onchange="updateTempTotal()">
+                            <option ${status==='Present'?'selected':''}>Present</option>
+                            <option ${status==='Absent'?'selected':''}>Absent</option>
+                            <option ${status==='Half Day'?'selected':''}>Half Day</option>
+                        </select>
+                    </td>
+                    <td id="lbr_pay_${i}">${pay}</td>
+                    <td><button class="btn btn-sm btn-danger" onclick="delWorker(${i})">X</button></td>
+                </tr>`;
+            });
+            document.getElementById('lbr_total_pay').innerText = totalPay;
+        }
+
+        function updateTempTotal() {
+            let total = 0;
+            laborData.workers.forEach((w, i) => {
+                let stat = document.getElementById(`lbr_stat_${i}`).value;
+                let pay = stat==='Present' ? w.wage : (stat==='Half Day' ? w.wage/2 : 0);
+                document.getElementById(`lbr_pay_${i}`).innerText = pay;
+                total += pay;
+            });
+            document.getElementById('lbr_total_pay').innerText = total;
+        }
+
+        function saveAttendance() {
+            let date = document.getElementById('lbr_date').value;
+            let records = [];
+            laborData.workers.forEach((w, i) => {
+                let stat = document.getElementById(`lbr_stat_${i}`).value;
+                records.push({name: w.name, status: stat});
+            });
+            laborData.attendance[date] = records;
+            localStorage.setItem(LABOR_KEY, JSON.stringify(laborData));
+            alert("Attendance Saved for " + date);
+        }
+
+        function delWorker(i) {
+            if(confirm("Delete Worker permanently?")) {
+                laborData.workers.splice(i, 1);
+                localStorage.setItem(LABOR_KEY, JSON.stringify(laborData));
+                renderAttendance();
+            }
+        }
+
+        // --- NEW: TASK MANAGER LOGIC ---
+        function addTask() {
+            let txt = document.getElementById('task_input').value;
+            if(!txt) return;
+            taskData.push({text: txt, done: false});
+            localStorage.setItem(TASK_KEY, JSON.stringify(taskData));
+            document.getElementById('task_input').value = "";
+            renderTasks();
+        }
+
+        function renderTasks() {
+            let div = document.getElementById('task_list'); div.innerHTML = "";
+            taskData.forEach((t, i) => {
+                div.innerHTML += `<div class="task-item ${t.done?'done':''}">
+                    <span>${t.text}</span>
+                    <div>
+                        <button class="btn btn-sm ${t.done?'btn-secondary':'btn-success'} me-2" onclick="toggleTask(${i})">✓</button>
+                    </div>
+                </div>`;
+            });
+        }
+        function toggleTask(i) {
+            taskData[i].done = !taskData[i].done;
+            localStorage.setItem(TASK_KEY, JSON.stringify(taskData));
+            renderTasks();
+        }
+        function clearTasks() {
+            taskData = taskData.filter(t => !t.done);
+            localStorage.setItem(TASK_KEY, JSON.stringify(taskData));
+            renderTasks();
+        }
+
+        // --- SEARCH LOGIC ---
+        function searchGlobal() {
+            let q = document.getElementById('global_search').value.toLowerCase();
+            if(q.length > 0) {
+                show('data'); // Switch to data tab
+                let rows = document.getElementById('table_body').getElementsByTagName('tr');
+                for(let row of rows) {
+                    let txt = row.innerText.toLowerCase();
+                    row.style.display = txt.includes(q) ? "" : "none";
+                }
+            } else {
+                refreshUI(); // Reset if empty
+            }
+        }
+
+        // --- WHATSAPP LOGIC ---
+        function sendOnWhatsApp(name, mobile, balance) {
+            if(!mobile || mobile.length < 10) return alert("Invalid Mobile Number!");
+            let msg = `Hello ${name}, Greetings from MN Builders. Your pending balance is ₹${balance}. Please clear it at the earliest. Thank You.`;
+            let url = `https://wa.me/91${mobile}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
+        // --- CORE ---
+        function saveData() { localStorage.setItem(DB_KEY, JSON.stringify(db)); refreshUI(); }
+        
+        function saveBooking() {
+            let flat = document.getElementById('nb_flat').value;
+            if(!flat || flat === "") return alert("Select Flat No!");
+            if(db.find(r => r.flat === flat)) return alert("Flat already booked!");
+            let total = parseFloat(document.getElementById('nb_total').value) || 0;
+            let adv = parseFloat(document.getElementById('nb_adv').value) || 0;
+            let date = document.getElementById('nb_date').value || new Date().toISOString().split('T')[0];
+            db.push({
+                id: Date.now(),
+                name: document.getElementById('nb_name').value,
+                mobile: document.getElementById('nb_mobile').value,
+                flat: flat,
+                floor: document.getElementById('nb_floor').value,
+                type: document.getElementById('nb_type').value,
+                sqft: document.getElementById('nb_sqft').value,
+                date: date,
+                total: total,
+                paid: adv,
+                txs: adv > 0 ? [{date: date, amount: adv, mode: document.getElementById('nb_mode').value}] : []
+            });
+            try { saveData(); } catch(e) { console.log("Save Error:", e); }
+            document.getElementById('nb_name').value = "";
+            document.getElementById('nb_mobile').value = "";
+            document.getElementById('nb_flat').selectedIndex = 0;
+            document.getElementById('nb_floor').selectedIndex = 0;
+            document.getElementById('nb_type').selectedIndex = 0;
+            document.getElementById('nb_sqft').value = "";
+            document.getElementById('nb_date').value = "";
+            document.getElementById('nb_total').value = "";
+            document.getElementById('nb_adv').value = "";
+            document.getElementById('nb_mode').selectedIndex = 0;
+            alert("Booking Saved! Form Cleared.");
+        }
+
+        function adjustPayment() {
+            let flat = document.getElementById('p_flat').value;
+            let amt = parseFloat(document.getElementById('p_pay').value) || 0;
+            let date = document.getElementById('p_date').value || new Date().toISOString().split('T')[0];
+            let mode = document.getElementById('p_mode').value;
+            
+            let rec = db.find(r => r.flat === flat);
+            if(rec && amt > 0) {
+                rec.paid += amt;
+                rec.txs.push({date: date, amount: amt, mode: mode});
+                try { saveData(); } catch(e) { console.log("Save Error:", e); }
+                document.getElementById('p_flat').selectedIndex = 0;
+                document.getElementById('p_name').value = "";
+                document.getElementById('p_bal').value = "";
+                document.getElementById('p_date').value = "";
+                document.getElementById('p_pay').value = "";
+                document.getElementById('p_mode').selectedIndex = 0;
+                alert("Payment Adjusted! Form Cleared.");
+            } else { alert("Invalid Flat or Amount"); }
+        }
+
+        function deleteRow(index) { if(confirm("DELETE Permanently?")) { db.splice(index, 1); saveData(); } }
+
+        function loadPendingDetails() {
+            let flat = document.getElementById('p_flat').value;
+            let rec = db.find(r => r.flat === flat);
+            if(rec) { document.getElementById('p_name').value = rec.name; document.getElementById('p_bal').value = rec.total - rec.paid; }
+            else { document.getElementById('p_name').value = ""; document.getElementById('p_bal').value = ""; }
+        }
+
+        // --- PLAZA ---
+        function savePlaza() {
+            let name = document.getElementById('plaza_name').value;
+            let pay = parseFloat(document.getElementById('plaza_pay').value) || 0;
+            let mobile = document.getElementById('plaza_mobile').value;
+            if(!name || pay === 0) return alert("Name & Payment Required");
+            plazaData.push({
+                name: name,
+                pay: pay,
+                date: document.getElementById('plaza_date').value || new Date().toISOString().split('T')[0],
+                mobile: mobile
+            });
+            localStorage.setItem(PLAZA_KEY, JSON.stringify(plazaData));
+            renderPlaza();
+            document.getElementById('plaza_name').value = "";
+            document.getElementById('plaza_pay').value = "";
+            document.getElementById('plaza_date').value = "";
+            document.getElementById('plaza_mobile').value = "";
+        }
+
+        function renderPlaza() {
+            let tbody = document.getElementById('plaza_body'); tbody.innerHTML = "";
+            let totalPlaza = 0;
+            plazaData.forEach((p, i) => {
+                totalPlaza += p.pay;
+                tbody.innerHTML += `<tr><td>${p.name}</td><td>${p.date}</td><td>₹${p.pay}</td><td>${p.mobile}</td><td>
+                    <button class="btn btn-sm btn-success" onclick="sendOnWhatsApp('${p.name}', '${p.mobile}', '0')"><i class="fab fa-whatsapp"></i></button>
+                    <button class="btn btn-sm btn-danger ms-1" onclick="deletePlaza(${i})">X</button>
+                </td></tr>`;
+            });
+            document.getElementById('plaza_total_disp').innerText = totalPlaza;
+        }
+        function deletePlaza(i) { if(confirm("Delete?")) { plazaData.splice(i,1); localStorage.setItem(PLAZA_KEY, JSON.stringify(plazaData)); renderPlaza(); } }
+
+        // --- EXPENSES ---
+        function calcExpTotal() {
+            let r = parseFloat(document.getElementById('exp_rate').value) || 0;
+            let q = parseFloat(document.getElementById('exp_qty').value) || 0;
+            document.getElementById('exp_amt').value = r * q;
+        }
+
+        function saveExpense() {
+            let sup = document.getElementById('exp_sup').value; 
+            let desc = document.getElementById('exp_desc').value; 
+            let rate = parseFloat(document.getElementById('exp_rate').value) || 0; 
+            let qty = parseFloat(document.getElementById('exp_qty').value) || 0; 
+            let amt = parseFloat(document.getElementById('exp_amt').value) || 0; 
+            let paid = parseFloat(document.getElementById('exp_paid').value) || 0; 
+            let date = document.getElementById('exp_date').value || new Date().toISOString().split('T')[0]; 
+            
+            if(!desc || amt === 0) return alert("Enter Item Name");
+            
+            expenses.push({sup: sup, name: desc, rate: rate, qty: qty, amount: amt, paid: paid, date: date});
+            localStorage.setItem(EXP_KEY, JSON.stringify(expenses));
+            renderExpenses();
+            document.getElementById('exp_desc').value = "";
+            document.getElementById('exp_amt').value = "";
+        }
+
+        function renderExpenses() {
+            let tbody = document.getElementById('exp_body'); tbody.innerHTML = "";
+            let total = 0;
+            expenses.forEach((e, i) => {
+                let pending = e.amount - (e.paid || 0);
+                total += e.amount;
+                let pendingHtml = pending > 0 ? `<div class="d-flex justify-content-between"><span class="text-danger fw-bold">₹${pending}</span><button class="btn btn-sm btn-warning ms-2" onclick="payPendingExpense(${i})">Pay</button></div>` : '<span class="text-success">PAID</span>';
+                tbody.innerHTML += `<tr><td>${e.sup || '-'}</td><td>${e.name}</td><td>₹${e.rate || 0}</td><td>${e.qty || 0}</td><td>₹${e.amount}</td><td class="text-success">₹${e.paid || 0}</td><td>${pendingHtml}</td><td>${e.date}</td><td><button class="btn btn-sm btn-danger" onclick="deleteExp(${i})">X</button></td></tr>`;
+            });
+            document.getElementById('exp_total_disp').innerText = total;
+        }
+        function payPendingExpense(i) {
+            let e = expenses[i];
+            let currentPending = e.amount - e.paid;
+            let payAmt = prompt(`Pending: ₹${currentPending}\nEnter amount to pay:`, currentPending);
+            if(payAmt) { e.paid += parseFloat(payAmt); localStorage.setItem(EXP_KEY, JSON.stringify(expenses)); renderExpenses(); }
+        }
+        function deleteExp(i) { if(confirm("Delete?")) { expenses.splice(i,1); localStorage.setItem(EXP_KEY, JSON.stringify(expenses)); renderExpenses(); } }
+
+        // --- INVENTORY (STOCK) ---
+        function saveStock() {
+            let item = document.getElementById('inv_item').value;
+            let type = document.getElementById('inv_type').value;
+            let qty = parseFloat(document.getElementById('inv_qty').value) || 0;
+            let date = document.getElementById('inv_date').value || new Date().toISOString().split('T')[0];
+            let note = document.getElementById('inv_note').value;
+            if(qty === 0) return alert("Please enter Quantity");
+            stockData.push({ id: Date.now(), item, type, qty, date, note });
+            localStorage.setItem(STOCK_KEY, JSON.stringify(stockData));
+            renderStock();
+            document.getElementById('inv_qty').value = "";
+            document.getElementById('inv_note').value = "";
+        }
+
+        function renderStock() {
+            let tbody = document.getElementById('inv_body'); tbody.innerHTML = "";
+            let balance = { "Cement":0, "Steel":0, "Bricks":0, "Sand":0, "Aggregates":0, "Tiles":0 };
+
+            stockData.slice().reverse().forEach((s, i) => {
+                let color = s.type === 'IN' ? 'text-success' : 'text-danger';
+                tbody.innerHTML += `<tr><td>${s.date}</td><td>${s.item}</td><td class="${color}">${s.type}</td><td>${s.qty}</td><td>${s.note || '-'}</td><td><button class="btn btn-sm btn-outline-danger" onclick="deleteStock(${stockData.length - 1 - i})">X</button></td></tr>`;
+                if(s.type === 'IN') balance[s.item] += s.qty;
+                else balance[s.item] -= s.qty;
+            });
+
+            if(document.getElementById('stock_cement')) document.getElementById('stock_cement').innerText = balance['Cement'];
+            if(document.getElementById('stock_steel')) document.getElementById('stock_steel').innerText = balance['Steel'];
+            if(document.getElementById('stock_bricks')) document.getElementById('stock_bricks').innerText = balance['Bricks'];
+            if(document.getElementById('stock_sand')) document.getElementById('stock_sand').innerText = balance['Sand'];
+
+            // NEW: LOW STOCK ALERT LOGIC
+            let alertHtml = "";
+            if(balance['Cement'] < 50) alertHtml += "<span class='text-warning d-block'>Cement Low (< 50 Bags)</span>";
+            if(balance['Steel'] < 2) alertHtml += "<span class='text-warning d-block'>Steel Low (< 2 Tons)</span>";
+            if(balance['Bricks'] < 1000) alertHtml += "<span class='text-warning d-block'>Bricks Low (< 1000 Nos)</span>";
+            document.getElementById('d_alerts').innerHTML = alertHtml || "All stock levels are good.";
+        }
+
+        function deleteStock(i) { if(confirm("Delete Transaction?")) { stockData.splice(i, 1); localStorage.setItem(STOCK_KEY, JSON.stringify(stockData)); renderStock(); } }
+        function resetStockForm() { document.getElementById('inv_qty').value = ""; document.getElementById('inv_note').value = ""; }
+
+        // --- SITE PROGRESS ---
+        function updateRangeLabel(lblId, val) { document.getElementById(lblId).innerText = val + "%"; }
+
+        function saveProgress() {
+            progressData.foundation = document.getElementById('rng_found').value;
+            progressData.plinth = document.getElementById('rng_plinth').value;
+            progressData.slab = document.getElementById('rng_slab').value;
+            progressData.brick = document.getElementById('rng_brick').value;
+            progressData.plaster = document.getElementById('rng_plaster').value;
+            localStorage.setItem(PROG_KEY, JSON.stringify(progressData));
+            renderProgress();
+            alert("Site Progress Updated!");
+        }
+
+        function renderProgress() {
+            document.getElementById('rng_found').value = progressData.foundation;
+            document.getElementById('rng_plinth').value = progressData.plinth;
+            document.getElementById('rng_slab').value = progressData.slab;
+            document.getElementById('rng_brick').value = progressData.brick;
+            document.getElementById('rng_plaster').value = progressData.plaster;
+
+            document.getElementById('lbl_found').innerText = progressData.foundation + "%";
+            document.getElementById('lbl_plinth').innerText = progressData.plinth + "%";
+            document.getElementById('lbl_slab').innerText = progressData.slab + "%";
+            document.getElementById('lbl_brick').innerText = progressData.brick + "%";
+            document.getElementById('lbl_plaster').innerText = progressData.plaster + "%";
+
+            updateBar('vis_found', 'vis_found_val', progressData.foundation);
+            updateBar('vis_plinth', 'vis_plinth_val', progressData.plinth);
+            updateBar('vis_slab', 'vis_slab_val', progressData.slab);
+            updateBar('vis_brick', 'vis_brick_val', progressData.brick);
+            updateBar('vis_plaster', 'vis_plaster_val', progressData.plaster);
+
+            if(document.getElementById('d_prog_found')) {
+                document.getElementById('d_prog_found').style.width = progressData.foundation + "%";
+                document.getElementById('d_prog_found').innerText = progressData.foundation + "%";
+                document.getElementById('d_prog_brick').style.width = progressData.brick + "%";
+                document.getElementById('d_prog_brick').innerText = progressData.brick + "%";
+                document.getElementById('d_prog_plaster').style.width = progressData.plaster + "%";
+                document.getElementById('d_prog_plaster').innerText = progressData.plaster + "%";
+            }
+        }
+
+        function updateBar(barId, valId, val) {
+            let el = document.getElementById(barId);
+            el.style.width = val + "%";
+            el.innerText = val === '100' ? "Completed" : val + "%";
+            document.getElementById(valId).innerText = val + "%";
+            el.classList.remove('bg-success', 'bg-warning', 'bg-secondary', 'progress-bar-striped', 'progress-bar-animated');
+            if(val == 100) el.classList.add('bg-success');
+            else if(val > 0) el.classList.add('bg-warning', 'progress-bar-striped', 'progress-bar-animated');
+            else el.classList.add('bg-secondary');
+        }
+
+        // --- SETTINGS ---
+        function loadSettings() {
+            document.getElementById('set_name').value = settings.name;
+            document.getElementById('set_tag').value = settings.tagline;
+            document.getElementById('set_addr').value = settings.address;
+            document.getElementById('set_crm_name').value = settings.crmName || "AYSHA PLAZA";
+            document.getElementById('brand_name_sidebar').innerHTML = settings.name.replace(" ", "<br>");
+            let customName = settings.crmName || "AYSHA PLAZA";
+            document.getElementById('menu_plaza_text').innerText = customName;
+            document.getElementById('header_plaza_text').innerText = customName;
+            applySettingsToDocs();
+        }
+
+        function saveSettings() {
+            settings.name = document.getElementById('set_name').value;
+            settings.tagline = document.getElementById('set_tag').value;
+            settings.address = document.getElementById('set_addr').value;
+            settings.crmName = document.getElementById('set_crm_name').value;
+            localStorage.setItem(SET_KEY, JSON.stringify(settings));
+            alert("Saved!");
+            loadSettings();
+        }
+
+        function applySettingsToDocs() {
+            document.getElementById('doc_co_name').innerText = settings.name;
+            document.getElementById('doc_co_tag').innerText = settings.tagline;
+            document.getElementById('doc_co_addr').innerText = settings.address;
+            let r_name = document.getElementById('rec_co_name_r'); if(r_name) r_name.innerText = settings.name;
+            let r_tag = document.getElementById('rec_co_tag_r'); if(r_tag) r_tag.innerText = settings.tagline;
+            let r_addr = document.getElementById('rec_co_addr_r'); if(r_addr) r_addr.innerText = settings.address;
+        }
+
+        function updateDocDropdown() {
+            let docSel = document.getElementById('doc_select'); 
+            let recSel = document.getElementById('rec_select');
+            let html = "<option value=''>Select Flat</option>";
+            db.forEach(r => { html += `<option value='${r.flat}'>${r.flat} - ${r.name}</option>`; });
+            if(docSel) docSel.innerHTML = html;
+            if(recSel) recSel.innerHTML = html;
+        }
+
+        function updateLedgerDropdown() {
+            let lSel = document.getElementById('l_search');
+            let html = "<option value=''>Select Flat to View Ledger</option>";
+            db.forEach(r => { html += `<option value='${r.flat}'>${r.flat} - ${r.name}</option>`; });
+            lSel.innerHTML = html;
+        }
+
+        // --- CHART & REFRESH ---
+        let chartInstance = null;
+        function refreshUI() {
+            let tbody = document.getElementById('table_body'); tbody.innerHTML="";
+            db.forEach((r,i) => {
+                let bal = r.total - r.paid;
+                tbody.innerHTML += `<tr><td>${r.name}</td><td>${r.flat}</td><td>${r.type}</td><td>${r.total}</td><td class="text-success">${r.paid}</td><td class="text-danger">${bal}</td><td>${bal<=0?'PAID':'PENDING'}</td>
+                <td>
+                    <button class="btn btn-sm btn-success" onclick="sendOnWhatsApp('${r.name}', '${r.mobile}', '${bal}')"><i class="fab fa-whatsapp"></i></button>
+                    <a href="sms:${r.mobile}" class="btn btn-sm btn-primary ms-1"><i class="fas fa-comment"></i></a>
+                    <button class="btn btn-sm btn-outline-danger ms-1" onclick="deleteRow(${i})">X</button>
+                </td></tr>`;
+            });
+
+            let totRec = db.reduce((s,r)=>s+r.paid,0);
+            let totDeal = db.reduce((s,r)=>s+r.total,0);
+            let plazaRec = plazaData.reduce((s,p)=>s+p.pay, 0);
+            let totExp = expenses.reduce((s,e)=>s+e.amount, 0);
+
+            document.getElementById('d_book').innerText = db.length;
+            document.getElementById('d_rec').innerText = totRec;
+            document.getElementById('d_pen').innerText = totDeal - totRec;
+            document.getElementById('d_profit').innerText = (totRec + plazaRec - totExp);
+
+            let today = new Date().toISOString().split('T')[0];
+            let todayColl = 0;
+            db.forEach(r => r.txs.forEach(t => { if(t.date === today) todayColl += t.amount; }));
+            document.getElementById('d_today').innerText = todayColl;
+
+            if (typeof Chart !== 'undefined') {
+                const ctx = document.getElementById('finChart');
+                if (chartInstance) chartInstance.destroy();
+                chartInstance = new Chart(ctx, { type:'bar', data:{labels:['Total','Paid','Bal'], datasets:[{label:'Amount', data:[totDeal,totRec,totDeal-totRec], backgroundColor:['#0d6efd','#198754','#dc3545']}]}, options: {responsive: true, maintainAspectRatio: false} });
+            }
+
+            let flatContainer = document.getElementById('flat_grid_view'); flatContainer.innerHTML = "";
+            flatList.forEach(f => {
+                let isBooked = db.some(r => r.flat === f);
+                let statusClass = isBooked ? 'booked' : 'available';
+                let icon = isBooked ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-check-circle"></i>';
+                let custInfo = isBooked ? `<span class='flat-customer'>${db.find(r => r.flat === f).name}</span>` : "";
+                flatContainer.innerHTML += `<div class="flat-box ${statusClass}"><h3>${f}</h3><div>${icon}</div><div class="flat-status">${isBooked ? "SOLD" : "OPEN"}</div>${custInfo}</div>`;
+            });
+
+            renderPlaza();
+            renderExpenses();
+            renderStock();
+            renderProgress();
+            updateDocDropdown();
+            updateLedgerDropdown(); 
+            loadSettings();
+            renderTasks();
+            renderAttendance();
+        }
+
+        // --- RECEIPT & NOTICE ---
+        function genRec() {
+            let flat = document.getElementById('rec_select').value; 
+            if(!flat) return alert("Select Flat");
+            let rec = db.find(r => r.flat === flat);
+            if(rec) {
+                document.getElementById('rec_view').style.display="block";
+                document.getElementById('r_name').innerText = rec.name;
+                document.getElementById('r_total').innerText = rec.total;
+                document.getElementById('r_paid').innerText = rec.paid;
+                document.getElementById('r_bal').innerText = rec.total - rec.paid;
+                document.getElementById('r_flat').innerText = `${rec.flat} (${rec.sqft || ''} SqFt)`;
+                let last = rec.txs[rec.txs.length-1];
+                if(last) { document.getElementById('r_date').innerText = last.date; document.getElementById('r_mode').innerText = last.mode; }
+            }
+        }
+
+        function genNotice() {
+            let flat = document.getElementById('doc_select').value; 
+            if(!flat) return alert("Select Flat");
+            let rec = db.find(r => r.flat === flat);
+            if(rec) {
+                document.getElementById('doc_preview').style.display = "block";
+                document.getElementById('notice_name').innerText = rec.name;
+                document.getElementById('notice_flat').innerText = rec.flat;
+                document.getElementById('notice_date').innerText = new Date().toLocaleDateString('en-GB');
+                document.getElementById('notice_total').innerText = rec.total;
+                document.getElementById('notice_paid').innerText = rec.paid;
+                document.getElementById('notice_due').innerText = rec.total - rec.paid;
+            }
+        }
+
+        function searchLedger() {
+            let flat = document.getElementById('l_search').value; 
+            let rec = db.find(r => r.flat === flat);
+            if(rec) {
+                document.getElementById('ledger_view').style.display="block";
+                document.getElementById('l_cust').innerText = rec.name;
+                let tbody = document.getElementById('l_history'); tbody.innerHTML=""; let run = 0;
+                rec.txs.forEach(t => { run += t.amount; tbody.innerHTML += `<tr><td>${t.date}</td><td>${t.mode}</td><td>${t.amount}</td><td>${rec.total-run}</td></tr>`; });
+            }
+        }
+
+        // --- BACKUP & EXCEL ---
+        function backup() {
+            let data = { db, plazaData, expenses, stockData, progressData, settings, laborData, taskData };
+            let a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data)); a.download = "Backup.json"; a.click();
+        }
+        function restore() {
+            let f = document.getElementById('restoreFile').files[0]; if(!f) return;
+            let r = new FileReader(); r.onload = e => { 
+                let d = JSON.parse(e.target.result); 
+                db = d.db || d; 
+                plazaData = d.plazaData || []; 
+                expenses = d.expenses || []; 
+                stockData = d.stockData || [];
+                progressData = d.progressData || defaultProgress;
+                settings = d.settings || defaultSettings;
+                laborData = d.laborData || { workers: [], attendance: {} };
+                taskData = d.taskData || [];
+                localStorage.setItem(PLAZA_KEY, JSON.stringify(plazaData)); 
+                localStorage.setItem(EXP_KEY, JSON.stringify(expenses)); 
+                localStorage.setItem(STOCK_KEY, JSON.stringify(stockData));
+                localStorage.setItem(PROG_KEY, JSON.stringify(progressData));
+                localStorage.setItem(SET_KEY, JSON.stringify(settings));
+                localStorage.setItem(LABOR_KEY, JSON.stringify(laborData));
+                localStorage.setItem(TASK_KEY, JSON.stringify(taskData));
+                saveData(); alert("Restored Successfully"); 
+            }; r.readAsText(f);
+        }
+        function resetAllData() { if(confirm("DELETE EVERYTHING?")) { localStorage.clear(); location.reload(); } }
+        function show(id, btn) { 
+            document.querySelectorAll('.page-section').forEach(p=>p.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+            if(btn) {
+                document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('active')); 
+                btn.classList.add('active'); 
+            }
+            if(id === 'dashboard') refreshUI(); 
+            if(id === 'labor_manage') renderAttendance();
+            if(id === 'tasks') renderTasks();
+        }
+
+        // --- EXCEL EXPORT ---
+        function exportToExcel() {
+            const wb = XLSX.utils.book_new();
+            let mainData = db.map(row => ({ "Customer Name": row.name, "Mobile": row.mobile, "Flat No": row.flat, "Total Value": row.total, "Total Paid": row.paid, "BALANCE": row.total - row.paid }));
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(mainData), "Entries");
+            
+            // New Labor Export
+            let attExport = [];
+            for(let date in laborData.attendance) {
+                laborData.attendance[date].forEach(r => attExport.push({Date: date, Name: r.name, Status: r.status}));
+            }
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(attExport), "Attendance");
+
+            // Other Exports
+            let invData = stockData.map(s => ({ "Date": s.date, "Item": s.item, "Type": s.type, "Quantity": s.qty, "Note": s.note }));
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(invData), "Inventory");
+            let pData = plazaData.map(r => ({"Name": r.name, "Date": r.date, "Amount": r.pay, "Mobile": r.mobile}));
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(pData), "Plaza");
+            let expData = expenses.map(e => ({ "Date": e.date, "Supplier": e.sup, "Item": e.name, "Amount": e.amount, "Paid": e.paid }));
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(expData), "Expenses");
+
+            XLSX.writeFile(wb, "MN_Data.xlsx");
+        }
+
+        // --- EXIT FUNCTION ADDED HERE ---
+        function exitSystem() {
+            if(confirm("Are you sure you want to Exit/Lock the system?")) {
+                document.getElementById('lock_screen').style.display = "flex";
+                document.getElementById('pin_input').value = "";
+                show('dashboard', null);
+            }
+        }
+
+        refreshUI();
+    </script>
+async function loadBookings(){
+
+const { data, error } = await supabaseClient
+.from('bookings')
+.select('*')
+.order('id', {ascending:false});
+
+if(error){
+   console.log(error);
+   return;
+}
+
+console.log(data);
+
+// Yaha table render karo
+
+}
+</body>
+</html>
+}
